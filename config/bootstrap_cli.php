@@ -15,6 +15,13 @@
 use Cake\Core\Configure;
 use Cake\Core\Exception\MissingPluginException;
 use Cake\Core\Plugin;
+use Dotenv\Dotenv;
+
+/*
+ * Get all environment variables
+ */
+$dotenv = new Dotenv(dirname(__DIR__));
+$dotenv->load();
 
 /**
  * Additional bootstrapping and configuration for CLI environments should
