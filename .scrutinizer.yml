@@ -1,0 +1,59 @@
+filter:
+  excluded_paths:
+    - .git/*
+    - .github/*
+    - bin/*
+    - logs/*
+    - tmp/*
+    - vendor/*
+    - webroot/font/*
+    - webroot/img/*
+checks:
+    php:
+        return_doc_comments: true
+        simplify_boolean_return: true
+        parameter_doc_comments: true
+        avoid_todo_comments: true
+        avoid_perl_style_comments: true
+        avoid_multiple_statements_on_same_line: true
+        avoid_fixme_comments: true
+    javascript:
+        var_sometimes_initialized: true
+        var_never_initialized: true
+        valid_typeof: true
+        use_isnan: true
+        unsafe_mutable_variable_usage: true
+        nsp_vulnerabilities: true
+        no_use_before_define: true
+        no_unused_vars: true
+        no_unused_function: true
+        no_unused_const: true
+        no_unreachable: true
+        no_undef: true
+        no_undef_init: true
+        no_redeclare: true
+        no_inner_declarations: true
+        no_implied_eval: true
+        no_invalid_regexp: true
+        no_extra_bind: true
+        no_eval: true
+        no_else_return: true
+        no_dupe_keys: true
+        no_delete_var: true
+        no_debugger: true
+        no_constant_condition: true
+        eqeqeq: true
+        duplicate_code: true
+        curly: true
+        check_unused_parameters: true
+        code_rating: true
+        check_undeclared_vars: true
+        check_try_statement: true
+        check_too_many_arguments: true
+        check_switch_ambiguous_test: true
+        check_for_loops_test: true
+coding_style:
+    php:
+        spaces:
+            around_operators:
+                concatenation: true
