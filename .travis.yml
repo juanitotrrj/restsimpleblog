@@ -16,6 +16,7 @@ matrix:
       env: PHPCS=1
 
 before_script:
+  - cp .env.sample .env
   - if [[ $PHPCS = 1 ]]; then composer require cakephp/cakephp-codesniffer:~2.1; fi
   - if [[ $PHPCS != 1 ]]; then composer install; fi
   - if [[ $PHPCS != 1 ]]; then composer require phpunit/phpunit:"^5.7|^6.0"; fi
