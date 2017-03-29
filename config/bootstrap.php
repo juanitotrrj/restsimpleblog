@@ -63,13 +63,6 @@ use Cake\Mailer\Email;
 use Cake\Network\Request;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
-use Dotenv\Dotenv;
-
-/*
- * Get all environment variables
- */
-$dotenv = new Dotenv(dirname(__DIR__));
-$dotenv->load();
 
 /*
  * Read configuration file and inject configuration into various
