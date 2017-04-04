@@ -24,8 +24,11 @@ class SearchController extends AppController
         // Base API URI
         $client = new Client(['base_uri' => 'http://devel2.ordermate.online/wp-json/wp/v2/']);
 
-        // Get POST data, if any
-        $post_data = array_merge(['user' => '', 'search' => '', 'published_date' => ''], $this->request->getData());
+        // Get POST data, if any, and sort order & direction
+        $post_data = array_merge(
+            ['user' => '', 'search' => '', 'published_date' => '', 'sb' => '', 'sd' => ''], 
+            $this->request->getData()
+        );
 
         // init
         $results = [];
@@ -45,9 +48,6 @@ class SearchController extends AppController
             }
             else
             {
-                // Get sort order & direction
-                $sort = [$this->request->getQuery('sort') => $this->request->getQuery('sdir')];
-
                 if (!empty($post_data))
                 {
                     // If User search filter exists
@@ -99,7 +99,18 @@ class SearchController extends AppController
                         ];
                     }
 
-                    $api_args = array_merge($api_args, $date_args, $search_args, $user_args);
+                    // Sorting
+                    $sort_args = [];
+                    if (!empty($post_data['sb']))
+                    {
+                        $sort_args = [
+                            'orderby' => $post_data['sb'], 
+                            'order' => strtolower($post_data['sd'])
+                        ];
+                    }
+
+                    // WP-API args
+                    $api_args = array_merge($api_args, $date_args, $search_args, $user_args, $sort_args);
                 }
             }
         }

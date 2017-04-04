@@ -8,7 +8,17 @@ $this->Html->script('search', ['block' => true]);
 ?>
 <div class="row">
     <div class="large-offset-2 large-8 columns content">
-        <form method="post" action="/search">
+        <form name="frmSortBlogs" method="post" action="/search">
+            <div style="display:none;">
+                <input type="hidden" name="_method" value="POST">
+                <input type="hidden" name="sb" value="<?= $post_data['sb'] ?? '' ?>">
+                <input type="hidden" name="sd" value="<?= $post_data['sd'] ?? '' ?>">
+                <input type="hidden" name="published_date" value="<?= $post_data['published_date'] ?? '' ?>">
+                <input type="hidden" name="search" value="<?= $post_data['search'] ?? '' ?>">
+                <input type="hidden" name="user" value="<?= $post_data['user'] ?? '' ?>">
+            </div>
+        </form>
+        <form name="frmSearchBlogs" method="post" action="/search">
             <div style="display:none;">
                 <input type="hidden" name="_method" value="POST">
             </div>
@@ -45,9 +55,9 @@ $this->Html->script('search', ['block' => true]);
     <div class="large-offset-2 large-8 columns content">
         <table class="hover">
             <thead>
-                <th>Title</th>
+                <th><a href="#" class="sort-link" data-col="title">Title</a></th>
                 <th>Author</th>
-                <th>Published Date</th>
+                <th><a href="#" class="sort-link" data-col="published_date">Published Date</a></th>
             </thead>
             <tbody>
         <?php if (empty($results)): ?>
