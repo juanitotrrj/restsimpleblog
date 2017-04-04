@@ -57,7 +57,7 @@ $this->Html->script('search', ['block' => true]);
             <thead>
                 <th><a href="#" class="sort-link" data-col="title">Title</a></th>
                 <th>Author</th>
-                <th><a href="#" class="sort-link" data-col="published_date">Published Date</a></th>
+                <th><a href="#" class="sort-link" data-col="date">Published Date</a></th>
             </thead>
             <tbody>
         <?php if (empty($results)): ?>
