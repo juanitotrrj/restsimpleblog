@@ -1,6 +1,5 @@
 <?php
 $this->assign('title', 'Search Blogs');
-
 $this->Html->css('vendor/jquery-ui-1.12.1.custom/jquery-ui.min', ['block' => true]);
 $this->Html->script('vendor/jquery-3.2.0.min', ['block' => true]);
 $this->Html->script('vendor/jquery-ui-1.12.1.custom/jquery-ui.min', ['block' => true]);

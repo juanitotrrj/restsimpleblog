@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Chronos\Chronos;
 use GuzzleHttp\Client;
 
 /**
@@ -19,9 +20,39 @@ class BlogController extends AppController
      */
     public function index($id)
     {
+        // Base API URI
+        $client = new Client(['base_uri' => 'http://devel2.ordermate.online/wp-json/wp/v2/']);
+        $search_data = array_merge(
+            ['user' => '', 'search' => '', 'published_date' => '', 'sb' => '', 'sd' => ''], 
+            $this->request->getData()
+        );
 
-        $this->set(compact('blog'));
-        $this->set('_serialize', ['blog']);
+        $blog = [];
+        $temp = json_decode((string)$client->request('GET', 'posts', ['query' => ['include' => 33]])->getBody(), true);
+        foreach ($temp as $post)
+        {
+            // Blog post details
+            $blog = [
+                'title' => $post['title']['rendered'],
+                'date' => (new Chronos($post['date']))->toDayDateTimeString(),
+                'content' => $post['content']['rendered'],
+            ];
+
+            // Author name and profile link
+            $author_raw = json_decode((string)$client->request('GET', 'users/' . $post['author'])->getBody(), true);
+            $blog['author'] = [
+                'href' => $author_raw['link'],
+                'name' => $author_raw['name']
+            ];
+
+            // Image
+            $image_raw = json_decode((string)$client->request('GET', 'media', ['query' => ['include' => $post['featured_media']]])->getBody(), true);
+            $image = array_pop($image_raw);
+            $blog['image'] = $image['guid']['rendered'];
+        }
+
+        $this->set(compact('blog', 'search_data'));
+        $this->set('_serialize', ['blog', 'search_data']);
     }
 
     /**
