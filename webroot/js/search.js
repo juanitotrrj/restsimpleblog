@@ -1,24 +1,24 @@
 $(function() {
+    // Datepicker
     $('#search-published-date').datepicker();
 
-    // Display correct sort icon upon hovering, default is "Asc"
+    // Column sorting
     $('.sort-link').on('click', function() {
-        var current_sort = $(this).attr('data-sort-order');
-        var column = $(this).attr('data-col');
         var sort_form = document.frmSortBlogs;
+        var current_sort = sort_form.sd;
+        var column = $(this).attr('data-col');
+        sort_form.sb.value = column;
 
-        // Clear the data-col, data-sort-order values of other columns
-        
         // Determine the sort order
-        if (current_sort === 'Desc' || current_sort === '')
+        if (current_sort.value === 'Desc' || current_sort.value === '')
         {
             // Asc
-            $(this).html($(this).html() + ' Asc');
+            current_sort.value = 'asc';
         }
         else
         {
             // Desc
-            $(this).html($(this).html() + ' Desc');
+            current_sort.value = 'desc';
         }
 
         // Submit
