@@ -29,7 +29,7 @@ class CommentController extends AppController
     public function blog($id)
     {
         $client = new Client(['base_uri' => 'http://devel2.ordermate.online/wp-json/wp/v2/']);
-        $temp = json_decode((string)$client->request('GET', 'comments', ['query' => ['post' => 33]])->getBody(), true);
+        $temp = json_decode((string)$client->request('GET', 'comments', ['query' => ['post' => $id]])->getBody(), true);
         $comments = [];
         foreach ($temp as $comment)
         {

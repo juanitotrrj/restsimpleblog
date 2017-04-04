@@ -13,4 +13,9 @@ $(function() {
 			addComment(comment);
 		});
 	});
+
+	// Link back
+	$('.search-back-link').on('click', function() {
+		document.frmSearchBack.submit();
+	});
 });

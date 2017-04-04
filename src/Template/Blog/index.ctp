@@ -29,7 +29,7 @@ $this->Html->scriptStart(['block' => true]);
 		<h1><?= $blog['title'] ?></h1>
 		<small>Published on <strong><?= $blog['date'] ?></strong> by <strong><?= $this->Html->link($blog['author']['name'], $blog['author']['href'], ['target' => '_blank']) ?></strong></small>
 		<br>
-		<small>&laquo;Back to Search | Edit this post</small>
+		<small><a href="#" class="search-back-link">&laquo; Back to Search</a> | Edit this post</small>
 		<hr>
 		<?= $blog['content'] ?>
 		<hr>
