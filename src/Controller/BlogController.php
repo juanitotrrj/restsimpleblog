@@ -103,20 +103,25 @@ class BlogController extends AppController
      */
     public function edit($id = null)
     {
-        $blog = $this->Blog->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $blog = $this->Blog->patchEntity($blog, $this->request->getData());
-            if ($this->Blog->save($blog)) {
-                $this->Flash->success(__('The blog has been saved.'));
+        // Base API URI
+        $blog = [];
+        $client = new Client(['base_uri' => 'http://devel2.ordermate.online/wp-json/wp/v2/']);
+        $search_data = array_merge(
+            ['user' => '', 'search' => '', 'published_date' => '', 'sb' => '', 'sd' => ''], 
+            $this->request->getData()
+        );
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The blog could not be saved. Please, try again.'));
+        $temp = json_decode((string)$client->request('GET', 'posts', ['query' => ['include' => $id]])->getBody(), true);
+        foreach ($temp as $post)
+        {
+            $blog = [
+                'title' => $post['title']['rendered'],
+                'content' => $post['content']['rendered']
+            ];
         }
-        $this->set(compact('blog'));
-        $this->set('_serialize', ['blog']);
+
+        $this->set(compact('blog', 'id', 'search_data'));
+        $this->set('_serialize', ['blog', 'id', 'search_data']);
     }
 
     /**
