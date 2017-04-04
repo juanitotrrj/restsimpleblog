@@ -36,4 +36,12 @@ $(function() {
         //console.log('='.repeat(30));
         sort_form.submit();
     });
+
+    // View blog
+    $('.view-blog').on('click', function() {
+        var form = document.frmViewBlogs;
+        var blog_id = $(this).attr('data-blog-id');
+        form.action = '/blog/' + blog_id;
+        form.submit();
+    });
 });

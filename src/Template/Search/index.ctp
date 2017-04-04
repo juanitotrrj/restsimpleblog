@@ -18,6 +18,16 @@ $this->Html->script('search', ['block' => true]);
                 <input type="hidden" name="user" value="<?= $post_data['user'] ?? '' ?>">
             </div>
         </form>
+        <form name="frmViewBlogs" method="post" action="">
+            <div style="display:none;">
+                <input type="hidden" name="_method" value="POST">
+                <input type="hidden" name="sb" value="<?= $post_data['sb'] ?? '' ?>">
+                <input type="hidden" name="sd" value="<?= $post_data['sd'] ?? '' ?>">
+                <input type="hidden" name="published_date" value="<?= $post_data['published_date'] ?? '' ?>">
+                <input type="hidden" name="search" value="<?= $post_data['search'] ?? '' ?>">
+                <input type="hidden" name="user" value="<?= $post_data['user'] ?? '' ?>">
+            </div>
+        </form>
         <form name="frmSearchBlogs" method="post" action="/search">
             <div style="display:none;">
                 <input type="hidden" name="_method" value="POST">
@@ -67,7 +77,7 @@ $this->Html->script('search', ['block' => true]);
         <?php else: ?>
             <?php foreach ($results as $post): ?>
                 <tr>
-                    <td><?= $post['title'] ?></td>
+                    <td><?= $this->Html->link($post['title'], '#', ['class' => 'view-blog', 'data-blog-id' => $post['id']]) ?></td>
                     <td><?= $this->Html->link($post['author']['name'], $post['author']['profile'], ['target' => '_blank']) ?></td>
                     <td><?= $post['published_date'] ?></td>
                 <tr>

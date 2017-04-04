@@ -120,6 +120,7 @@ class SearchController extends AppController
         {
             $author_raw = json_decode((string)$client->request('GET', 'users/' . $post['author'])->getBody(), true);
             $results[] = [
+                'id' => $post['id'],
                 'title' => $post['title']['rendered'],
                 'published_date' => (new Chronos($post['date_gmt']))->toFormattedDateString(),
                 'author' => ['name' => $author_raw['name'], 'profile' => $author_raw['link']],
