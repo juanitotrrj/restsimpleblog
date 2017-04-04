@@ -5,7 +5,10 @@ $this->Html->script('vendor/jquery-3.2.0.min', ['block' => true]);
 $this->Html->script('vendor/jquery-ui-1.12.1.custom/jquery-ui.min', ['block' => true]);
 $this->Html->script(['blog', 'blog-comments'], ['block' => true]);
 $this->Html->css('blog', ['block' => true]);
+$this->Html->scriptStart(['block' => true]);
 ?>
+	var blog_id = <?= $blog['id'] ?>;
+<?php $this->Html->scriptEnd(); ?>
 <form name="frmSearchBack" method="post" action="/search">
     <div style="display:none;">
         <input type="hidden" name="_method" value="POST">
@@ -24,7 +27,9 @@ $this->Html->css('blog', ['block' => true]);
 <div class="row">
 	<div class="large-8 large-offset-2">
 		<h1><?= $blog['title'] ?></h1>
-		<p><small>Published on <strong><?= $blog['date'] ?></strong> by <strong><?= $this->Html->link($blog['author']['name'], $blog['author']['href'], ['target' => '_blank']) ?></strong></small></p>
+		<small>Published on <strong><?= $blog['date'] ?></strong> by <strong><?= $this->Html->link($blog['author']['name'], $blog['author']['href'], ['target' => '_blank']) ?></strong></small>
+		<br>
+		<small>&laquo;Back to Search | Edit this post</small>
 		<hr>
 		<?= $blog['content'] ?>
 		<hr>

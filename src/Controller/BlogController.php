@@ -28,11 +28,12 @@ class BlogController extends AppController
         );
 
         $blog = [];
-        $temp = json_decode((string)$client->request('GET', 'posts', ['query' => ['include' => 33]])->getBody(), true);
+        $temp = json_decode((string)$client->request('GET', 'posts', ['query' => ['include' => $id]])->getBody(), true);
         foreach ($temp as $post)
         {
             // Blog post details
             $blog = [
+                'id' => $post['id'],
                 'title' => $post['title']['rendered'],
                 'date' => (new Chronos($post['date']))->toDayDateTimeString(),
                 'content' => $post['content']['rendered'],
