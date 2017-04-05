@@ -12,24 +12,15 @@ use GuzzleHttp\Client;
  */
 class CommentController extends AppController
 {
-
-    /**
-     * Index method
-     *
-     * @return \Cake\Network\Response|null
-     */
-    public function index()
+    public function initialize()
     {
-        $comment = $this->paginate($this->Comment);
-
-        $this->set(compact('comment'));
-        $this->set('_serialize', ['comment']);
+        parent::initialize();
+        $this->client = new Client(['base_uri' => env('WAPI_BASE_URI', null)]);
     }
 
     public function blog($id)
     {
-        $client = new Client(['base_uri' => 'http://devel2.ordermate.online/wp-json/wp/v2/']);
-        $temp = json_decode((string)$client->request('GET', 'comments', ['query' => ['post' => $id]])->getBody(), true);
+        $temp = json_decode((string)$this->client->request('GET', 'comments', ['query' => ['post' => $id]])->getBody(), true);
         $comments = [];
         foreach ($temp as $comment)
         {
@@ -48,85 +39,20 @@ class CommentController extends AppController
     }
 
     /**
-     * View method
-     *
-     * @param string|null $id Comment id.
-     * @return \Cake\Network\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $comment = $this->Comment->get($id, [
-            'contain' => []
-        ]);
-
-        $this->set('comment', $comment);
-        $this->set('_serialize', ['comment']);
-    }
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Network\Response|null Redirects on successful add, renders view otherwise.
+     * Add comment
+     * @return null
      */
     public function add()
     {
-        $comment = $this->Comment->newEntity();
-        if ($this->request->is('post')) {
-            $comment = $this->Comment->patchEntity($comment, $this->request->getData());
-            if ($this->Comment->save($comment)) {
-                $this->Flash->success(__('The comment has been saved.'));
+        $data = $this->request->getData();
+        $this->client->post('comments', ['form_params' => [
+            'post' => $data['id'],
+            'content' => $data['m'],
+            'author' => 1
+        ], 'auth' => [env('WAPI_USER'), env('WAPI_PASS')]]);
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The comment could not be saved. Please, try again.'));
-        }
-        $this->set(compact('comment'));
-        $this->set('_serialize', ['comment']);
-    }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Comment id.
-     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $comment = $this->Comment->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $comment = $this->Comment->patchEntity($comment, $this->request->getData());
-            if ($this->Comment->save($comment)) {
-                $this->Flash->success(__('The comment has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The comment could not be saved. Please, try again.'));
-        }
-        $this->set(compact('comment'));
-        $this->set('_serialize', ['comment']);
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Comment id.
-     * @return \Cake\Network\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $comment = $this->Comment->get($id);
-        if ($this->Comment->delete($comment)) {
-            $this->Flash->success(__('The comment has been deleted.'));
-        } else {
-            $this->Flash->error(__('The comment could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
+        return $this->response
+            ->withType('application/json')
+            ->withStringBody(json_encode([]));
     }
 }

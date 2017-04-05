@@ -14,6 +14,12 @@ use GuzzleHttp\Client;
  */
 class SearchController extends AppController
 {
+    public function initialize()
+    {
+        parent::initialize();
+        $this->client = new Client(['base_uri' => env('WAPI_BASE_URI', null)]);
+    }
+
     /**
      * Index method
      *
@@ -21,9 +27,6 @@ class SearchController extends AppController
      */
     public function index()
     {
-        // Base API URI
-        $client = new Client(['base_uri' => 'http://devel2.ordermate.online/wp-json/wp/v2/']);
-
         // Get POST data, if any, and sort order & direction
         $post_data = array_merge(
             ['user' => '', 'search' => '', 'published_date' => '', 'sb' => '', 'sd' => ''], 
@@ -35,7 +38,7 @@ class SearchController extends AppController
         $api_args = [];
 
         // Get all users
-        $user_response = $client->request('GET', 'users');
+        $user_response = $this->client->request('GET', 'users');
         $users = json_decode((string)$user_response->getBody(), true);
 
         if ($this->request->is(['post']))
@@ -55,9 +58,9 @@ class SearchController extends AppController
                     if (!empty($post_data['user']))
                     {
                         // User comments
-                        $user_comments = json_decode((string)$client->request('GET', 'comments', [
+                        $user_comments = json_decode((string)$this->client->request('GET', 'comments', [
                             'query' => ['author' => $post_data['user']],
-                            'auth' => ['test', '4WB@mgar$#DVq8&%sBt(rj!5']
+                            'auth' => [env('WAPI_USER'), env('WAPI_PASS')]
                         ])
                             ->getBody(), true);
 
@@ -115,10 +118,10 @@ class SearchController extends AppController
             }
         }
 
-        $temp = json_decode((string)$client->request('GET', 'posts', ['query' => $api_args])->getBody(), true);
+        $temp = json_decode((string)$this->client->request('GET', 'posts', ['query' => $api_args])->getBody(), true);
         foreach ($temp as $post)
         {
-            $author_raw = json_decode((string)$client->request('GET', 'users/' . $post['author'])->getBody(), true);
+            $author_raw = json_decode((string)$this->client->request('GET', 'users/' . $post['author'])->getBody(), true);
             $results[] = [
                 'id' => $post['id'],
                 'title' => $post['title']['rendered'],

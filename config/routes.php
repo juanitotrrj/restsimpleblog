@@ -43,7 +43,7 @@ use Cake\Routing\Route\DashedRoute;
  */
 Router::defaultRouteClass(DashedRoute::class);
 
-Router::connect('/blog/:id', ['controller' => 'Blog', 'action' => 'index'], ['id' => '\d+', 'pass' => ['id']]);
+Router::connect('/blog/:id', ['controller' => 'Blog', 'action' => 'view'], ['id' => '\d+', 'pass' => ['id']]);
 
 Router::scope('/', function (RouteBuilder $routes) {
     /**

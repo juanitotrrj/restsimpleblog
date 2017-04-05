@@ -16,9 +16,19 @@ $this->Html->scriptStart(['block' => true]);
         <input type="hidden" name="user" value="<?= $search_data['user'] ?? '' ?>">
     </div>
 </form>
-<?= $this->element('Blog/blog-content', ['nav' => true, 'edit' => false]) ?>
+<?= $this->element('Blog/blog-content', ['mode' => 'show']) ?>
+<div class="row">
+    <div class="large-8 large-offset-2">
+        <h4>Your thoughts</h4>
+        <label>
+            <textarea id="text-comment" placeholder="What do you think?"></textarea>
+            <button type="button" id="btn-comment-save" class="success button">Comment</button>
+        </label>
+        <hr>
+    </div>
+</div>
 <div class="row">
 	<div class="large-8 large-offset-2 comments-section">
-		<h4>User Comments</h4>
+		<h4>What others are saying</h4>
 	</div>
 </div>

@@ -1,1 +1,1 @@
-<small><a href="#" class="search-back-link">&laquo; Back to Search</a> | <?= $this->Html->link('Edit this post', ['controller' => 'Blog', 'action' => 'edit', $blog['id']]) ?> | PDF </small>
+<small><a href="#" class="search-back-link">&laquo; Back to Search</a> | <?= $this->Html->link('Edit this post', ['controller' => 'Blog', 'action' => 'edit', $blog['id']]) ?></small>

@@ -21,108 +21,41 @@ class BlogController extends AppController
     }
 
     /**
-     * Index method
-     *
-     * @return \Cake\Network\Response|null
-     */
-    public function index($id)
-    {
-        // Base API URI
-        $client = new Client(['base_uri' => 'http://devel2.ordermate.online/wp-json/wp/v2/']);
-        $search_data = array_merge(
-            ['user' => '', 'search' => '', 'published_date' => '', 'sb' => '', 'sd' => ''], 
-            $this->request->getData()
-        );
-
-        $blog = [];
-        $temp = json_decode((string)$client->request('GET', 'posts', ['query' => ['include' => $id]])->getBody(), true);
-        foreach ($temp as $post)
-        {
-            // Blog post details
-            $blog = [
-                'id' => $post['id'],
-                'title' => $post['title']['rendered'],
-                'date' => (new Chronos($post['date']))->toDayDateTimeString(),
-                'date_updated' => (new Chronos($post['modified']))->toDayDateTimeString(),
-                'content' => $post['content']['rendered'],
-            ];
-
-            // Author name and profile link
-            $author_raw = json_decode((string)$client->request('GET', 'users/' . $post['author'])->getBody(), true);
-            $blog['author'] = [
-                'href' => $author_raw['link'],
-                'name' => $author_raw['name']
-            ];
-
-            // Image
-            $image_raw = json_decode((string)$client->request('GET', 'media', ['query' => ['include' => $post['featured_media']]])->getBody(), true);
-            $image = array_pop($image_raw);
-            $blog['image'] = $image['guid']['rendered'];
-        }
-
-        $this->set(compact('blog', 'search_data'));
-        $this->set('_serialize', ['blog', 'search_data']);
-    }
-
-    /**
      * View method
      *
      * @param string|null $id Blog id.
      * @return \Cake\Network\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
-    {
-        $blog = $this->Blog->get($id, [
-            'contain' => []
-        ]);
-
-        $this->set('blog', $blog);
-        $this->set('_serialize', ['blog']);
-    }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Blog id.
-     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function edit($id = null)
+    public function view($id)
     {
         // Base API URI
-        $blog = [];
-        $client = new Client(['base_uri' => 'http://devel2.ordermate.online/wp-json/wp/v2/']);
         $search_data = array_merge(
             ['user' => '', 'search' => '', 'published_date' => '', 'sb' => '', 'sd' => ''], 
             $this->request->getData()
         );
 
-        if (isset($search_data['e_edit']) && !empty($search_data['e_edit']))
-        {
-            // Update the post
-            $client->request('POST', 'posts/' . $id, ['query' => [
-                'title' => $search_data['e_title'],
-                'content' => $search_data['e_content']
-                ], 'auth' => ['test', '4WB@mgar$#DVq8&%sBt(rj!5']]);
-            $this->Flash->success(__('The blog has been successfully updated.'));
-            return $this->redirect(['action' => 'index', $id]);
-        }
-        else
-        {
-            $temp = json_decode((string)$client->request('GET', 'posts', ['query' => ['include' => $id]])->getBody(), true);
-            foreach ($temp as $post)
-            {
-                $blog = [
-                    'title' => $post['title']['rendered'],
-                    'content' => $post['content']['rendered']
-                ];
+        $blog = $this->getPost($id);
 
-                // Image
-                $image_raw = json_decode((string)$client->request('GET', 'media', ['query' => ['include' => $post['featured_media']]])->getBody(), true);
-                $image = array_pop($image_raw);
-                $blog['image'] = $image['guid']['rendered'];
-            }
+        $this->set(compact('blog', 'search_data'));
+        $this->set('_serialize', ['blog', 'search_data']);
+        $this->render('/Blog/index');
+    }
+
+    public function add()
+    {
+        $blog = ['title' => 'Blog title', 'content' => 'Blog content', 'image' => ''];
+
+        if ($this->request->is('post'))
+        {
+            $data = $this->request->getData();
+
+            // Save the image
+
+            // Save the post
+            
+            
+            $this->Flash->success(__('Post created.'));
+            return $this->redirect(['action' => 'view', $id]);
         }
 
         $this->set(compact('blog', 'id', 'search_data'));
@@ -130,24 +63,66 @@ class BlogController extends AppController
     }
 
     /**
-     * Delete method
+     * Edit method
+     *
+     * @param string|null $id Blog id.
+     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
+     */
+    public function edit($id = null)
+    {
+        // Base API URI
+        $blog = [];
+
+        // Initialize the "Search" filters data
+        $search_data = array_merge(
+            ['user' => '', 'search' => '', 'published_date' => '', 'sb' => '', 'sd' => ''], 
+            $this->request->getData()
+        );
+
+        if (!empty($search_data['e_edit']))
+        {
+            // Update the post
+            $this->client->request('POST', 'posts/' . $id, ['query' => [
+                'title' => strip_tags($search_data['e_title']),
+                'content' => $search_data['e_content']
+                ], 'auth' => [env('WAPI_USER'), env('WAPI_PASS')]]);
+            $this->Flash->success(__('Update successful.'));
+            return $this->redirect(['action' => 'view', $id]);
+        }
+        else
+        {
+            // Display the post for editing
+            $blog = $this->getPost($id);
+        }
+
+        $this->set(compact('blog', 'id', 'search_data'));
+        $this->set('_serialize', ['blog', 'id', 'search_data']);
+    }
+
+    /**
+     * Delete posts
      *
      * @param string|null $id Blog id.
      * @return \Cake\Network\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         
         // Delete blog here
+        $this->client->delete('posts/' . $id);
         
-        $this->Flash->success(__('The blog has been deleted.'));
+        $this->Flash->success(__('The post has been deleted.'));
 
         return $this->redirect(['action' => 'index']);
     }
 
-
+    /**
+     * Download post in PDF
+     * @param  string $type type of download
+     * @param  integer $id   id of post
+     * @return \Cake\Network\Response|null Redirects on successful edit, renders view otherwise.
+     */
     public function download($type = 'pdf', $id)
     {
         $blog = $this->getPost($id);
@@ -163,32 +138,60 @@ class BlogController extends AppController
         $dompdf->stream();
     }
 
+    /**
+     * Get the post
+     * @param  integer $id id of the post
+     * @return array Blog post content details
+     */
     private function getPost($id)
     {
         $blog = [];
-        $temp = json_decode((string)$this->client->request('GET', 'posts', ['query' => ['include' => $id]])->getBody(), true);
-        foreach ($temp as $post)
+
+        // Perform GET request
+        $post = json_decode((string)$this->client->request('GET', 'posts/' . $id)->getBody(), true);
+
+        // Blog post details
+        $blog = [
+            'id' => $post['id'],
+            'title' => $post['title']['rendered'],
+            'date' => (new Chronos($post['date']))->toDayDateTimeString(),
+            'date_updated' => (new Chronos($post['modified']))->toDayDateTimeString(),
+            'content' => $post['content']['rendered'],
+        ];
+
+        // Author name and profile link
+        $author_raw = json_decode((string)$this->client->request('GET', 'users/' . $post['author'])->getBody(), true);
+        $blog['author'] = [
+            'href' => $author_raw['link'],
+            'name' => $author_raw['name']
+        ];
+
+        // Image
+        $image_raw = json_decode((string)$this->client->request('GET', 'media', ['query' => ['include' => $post['featured_media']]])->getBody(), true);
+        $image = array_pop($image_raw);
+        $blog['image'] = $image['guid']['rendered'];
+
+        // Tags
+        $tags_raw = json_decode((string)$this->client->request('GET', 'tags', ['query' => ['include' => implode(',', $post['tags'])]])->getBody(), true);
+        foreach ($tags_raw as $tag)
         {
-            // Blog post details
-            $blog = [
-                'id' => $post['id'],
-                'title' => $post['title']['rendered'],
-                'date' => (new Chronos($post['date']))->toDayDateTimeString(),
-                'date_updated' => (new Chronos($post['modified']))->toDayDateTimeString(),
-                'content' => $post['content']['rendered'],
-            ];
+            $blog['tags'][] = $tag['name'];
+        }
 
-            // Author name and profile link
-            $author_raw = json_decode((string)$this->client->request('GET', 'users/' . $post['author'])->getBody(), true);
-            $blog['author'] = [
-                'href' => $author_raw['link'],
-                'name' => $author_raw['name']
-            ];
+        // Category
+        $categories_raw = json_decode((string)$this->client->request('GET', 'categories', ['query' => ['include' => implode(',', $post['categories'])]])->getBody(), true);
+        foreach ($categories_raw as $category)
+        {
+            $blog['categories'][] = $category['name'];
+        }
 
-            // Image
-            $image_raw = json_decode((string)$this->client->request('GET', 'media', ['query' => ['include' => $post['featured_media']]])->getBody(), true);
-            $image = array_pop($image_raw);
-            $blog['image'] = $image['guid']['rendered'];
+        // Revisions
+        $revisions_raw = json_decode((string)$this->client->request('GET', 'posts/' . $post['id'] . '/revisions', ['auth' => [env('WAPI_USER'), env('WAPI_PASS')]])->getBody(), true);
+        foreach ($revisions_raw as $revision)
+        {
+            $blog['revisions'][] = [
+                'date' => (new Chronos($revision['date']))->toDateTimeString()
+            ];
         }
 
         return $blog;

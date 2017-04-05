@@ -1,9 +1,10 @@
 <?php
 $this->assign('title', 'Search Blogs');
 $this->Html->script('search', ['block' => true]);
+$this->Html->css('search', ['block' => true]);
 ?>
 <div class="row">
-    <div class="large-offset-2 large-8 columns content">
+    <div class="large-offset-1 large-10 columns content">
         <form name="frmSortBlogs" method="post" action="/search">
             <div style="display:none;">
                 <input type="hidden" name="_method" value="POST">
@@ -29,17 +30,17 @@ $this->Html->script('search', ['block' => true]);
                 <input type="hidden" name="_method" value="POST">
             </div>
             <div class="row valign-end">
-                <div class="medium-3 columns">
+                <div class="large-4 columns">
                     <label>Published date
                     <input type="text" name="published_date" id="search-published-date" placeholder="mm/dd/yyyy" maxlength="10" value="<?= $post_data['published_date'] ?? '' ?>">
                     </label>
                 </div>
-                <div class="medium-3 columns">
+                <div class="large-4 columns">
                     <label>Title or content
                     <input type="text" name="search" placeholder="title or content" value="<?= $post_data['search'] ?? '' ?>">
                     </label>
                 </div>
-                <div class="medium-3 columns">
+                <div class="large-4 columns">
                     <label>Comments by
                     <select name="user">
                         <option value="">--Select one--</option>
@@ -49,8 +50,11 @@ $this->Html->script('search', ['block' => true]);
                     </select>
                     </label>
                 </div>
-                <div class="medium-3 columns">
-                <button type="submit" class="success button">Search</button>
+            </div>
+            <div class="row">
+                <div class="large-4 large-offset-4 text-center columns">
+                    <button type="submit" class="success button">Search</button>
+                    <?= $this->Html->link('Create new', ['controller' => 'Blog', 'action' => 'add'], ['class' => 'button']) ?>
                 </div>
             </div>
         </form>

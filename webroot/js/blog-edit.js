@@ -1,5 +1,5 @@
 $(function() {
-	vex.dialog.alert('Click the title, image, and/or content to show the rich text editors.');
+	vex.dialog.alert('Click the title and/or content to show the rich text editors.');
 
 	// Save
 	$('#btn-edit-save').on('click', function(e) {
