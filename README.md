@@ -1,4 +1,9 @@
-# Running the application
+# Juani Tarroja
+
+### Requirements
+PHP 7.0 or higher
+
+### Running the application
 `php -S localhost:8000`
 
 ### Search Page
