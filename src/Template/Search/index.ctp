@@ -1,8 +1,5 @@
 <?php
 $this->assign('title', 'Search Blogs');
-$this->Html->css('vendor/jquery-ui-1.12.1.custom/jquery-ui.min', ['block' => true]);
-$this->Html->script('vendor/jquery-3.2.0.min', ['block' => true]);
-$this->Html->script('vendor/jquery-ui-1.12.1.custom/jquery-ui.min', ['block' => true]);
 $this->Html->script('search', ['block' => true]);
 ?>
 <div class="row">
@@ -31,7 +28,7 @@ $this->Html->script('search', ['block' => true]);
             <div style="display:none;">
                 <input type="hidden" name="_method" value="POST">
             </div>
-            <div class="row">
+            <div class="row valign-end">
                 <div class="medium-3 columns">
                     <label>Published date
                     <input type="text" name="published_date" id="search-published-date" placeholder="mm/dd/yyyy" maxlength="10" value="<?= $post_data['published_date'] ?? '' ?>">
@@ -53,7 +50,7 @@ $this->Html->script('search', ['block' => true]);
                     </label>
                 </div>
                 <div class="medium-3 columns">
-                    <?= $this->Form->button(__('Submit')) ?>
+                <button type="submit" class="success button">Search</button>
                 </div>
             </div>
         </form>

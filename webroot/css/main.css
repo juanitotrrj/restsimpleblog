@@ -6,3 +6,21 @@
 h1,h2,h3,h4,h5,h6 {
 	font-family: 'Vidaloka', serif;
 }
+
+.no-left-padding {
+	padding-left: 0;
+}
+
+.no-right-padding {
+	padding-right: 0;
+}
+
+.edit-nav {
+	position: fixed;
+	top: 20px;
+}
+
+.valign-end {
+	display: flex;
+	align-items: flex-end;
+}

@@ -1,7 +1,9 @@
 <?php
-$this->Html->script(['vendor/jquery-3.2.0.min', 'vendor/ckeditor/ckeditor.js', 'blog-edit'], ['block' => true]);
+$this->Html->css('blog', ['block' => true]);
+$this->Html->script(['vendor/ckeditor/ckeditor.js'], ['block' => true]);
+$this->Html->script('blog-edit', ['block' => true]);
 ?>
-<form name="frmSearchBack" method="post" action="/search">
+<form name="frmBlogViewBack" method="post" action="/blog/<?= $id ?>">
     <div style="display:none;">
         <input type="hidden" name="_method" value="POST">
         <input type="hidden" name="sb" value="<?= $search_data['sb'] ?? '' ?>">
@@ -12,28 +14,11 @@ $this->Html->script(['vendor/jquery-3.2.0.min', 'vendor/ckeditor/ckeditor.js', '
     </div>
 </form>
 <form name="frmEditBlog" action="/blog/edit/<?= $id ?>" method="post">
-	<div class="row">
-		<div class="large-offset-2 large-8">
-			<h1>Edit Blog</h1>
-			<input type="text" placeholder="title" value="<?= $blog['title'] ?>">
-		</div>
-	</div>
-	<div class="row">
-		<div class="large-offset-2 large-8">
-			<textarea id="blogcontent" name="blogcontent">
-				<?= $blog['content'] ?>
-			</textarea>
-			<script>
-				CKEDITOR.replace('blogcontent');
-			</script>
-			<hr>
-		</div>
-	</div>
-	<div class="row">
-		<div class="large-offset-2 large-8">
-			<button>Save</button>
-			<button>Cancel</button>
-			<button>Preview</button>
-		</div>
-	</div>
+	<div style="display:none;">
+        <input type="hidden" name="_method" value="POST">
+        <input type="hidden" name="e_edit" value="">
+        <input type="hidden" name="e_title" value="">
+        <input type="hidden" name="e_content" value="">
+    </div>
+	<?= $this->element('Blog/blog-content', ['nav' => false, 'edit' => true]) ?>
 </form>

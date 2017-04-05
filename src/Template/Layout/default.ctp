@@ -28,10 +28,19 @@ $cakeDescription = 'JUANITO S TARROJA III - PHP Dev Test';
 
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('cake.css') ?>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css" integrity="sha256-itWEYdFWzZPBG78bJOOiQIn06QCgN/F0wMDcC4nOhxY=" crossorigin="anonymous" />
+    <?= $this->Html->css('vendor/jquery-ui-1.12.1.custom/jquery-ui.min') ?>
+    <link rel="stylesheet" href="/js/vendor/vex-3.0.0/dist/css/vex.css" />
+    <link rel="stylesheet" href="/js/vendor/vex-3.0.0/dist/css/vex-theme-os.css" />
     <?= $this->Html->css('main.css') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
+    <?= $this->Html->script('vendor/jquery-3.2.0.min') ?>
+    <?= $this->Html->script('vendor/jquery-ui-1.12.1.custom/jquery-ui.min') ?>
+    <?= $this->Html->script('vendor/vex-3.0.0/dist/js/vex.combined.min') ?>
+    <script>vex.defaultOptions.className = 'vex-theme-os'</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/js/foundation.min.js" integrity="sha256-Nd2xznOkrE9HkrAMi4xWy/hXkQraXioBg9iYsBrcFrs=" crossorigin="anonymous"></script>
     <?= $this->fetch('script') ?>
 </head>
 <body>
@@ -41,5 +50,6 @@ $cakeDescription = 'JUANITO S TARROJA III - PHP Dev Test';
     </div>
     <footer>
     </footer>
+    <?= $this->fetch('bottomScript') ?>
 </body>
 </html>
