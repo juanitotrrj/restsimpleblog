@@ -138,6 +138,8 @@ class BlogController extends AppController
      */
     public function download($type = 'pdf', $id)
     {
+        $this->autoRender = false;
+
         $blog = $this->getPost($id);
         
         $view = new View($this->request);
