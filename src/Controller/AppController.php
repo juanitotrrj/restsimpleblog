@@ -16,6 +16,8 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use GuzzleHttp\Client;
+use Cake\Chronos\Chronos;
 
 /**
  * Application Controller
@@ -50,6 +52,9 @@ class AppController extends Controller
          */
         //$this->loadComponent('Security');
         //$this->loadComponent('Csrf');
+        
+        // WP-API Guzzle Client
+        $this->client = new Client(['base_uri' => env('WAPI_BASE_URI', null)]);
     }
 
     /**

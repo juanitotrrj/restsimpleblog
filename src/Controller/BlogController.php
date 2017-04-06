@@ -3,7 +3,6 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Chronos\Chronos;
-use GuzzleHttp\Client;
 use Dompdf\Dompdf;
 use Cake\View\View;
 use Cake\Routing\Router;
@@ -15,12 +14,6 @@ use Cake\Routing\Router;
  */
 class BlogController extends AppController
 {
-    public function initialize()
-    {
-        parent::initialize();
-        $this->client = new Client(['base_uri' => env('WAPI_BASE_URI', null)]);
-    }
-
     /**
      * View method
      *
@@ -128,11 +121,10 @@ class BlogController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['delete']);
         
-        // Delete blog here
-        $this->client->delete('posts/' . $id);
-        
+        // Delete blog post here
+        $this->client->delete('posts/' . $id, ['auth' => [env('WAPI_USER'), env('WAPI_PASS')]]);
         $this->Flash->success(__('The post has been deleted.'));
 
         return $this->redirect(['action' => 'index']);

@@ -3,7 +3,6 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Chronos\Chronos;
-use GuzzleHttp\Client;
 
 /**
  * Comment Controller
@@ -12,12 +11,6 @@ use GuzzleHttp\Client;
  */
 class CommentController extends AppController
 {
-    public function initialize()
-    {
-        parent::initialize();
-        $this->client = new Client(['base_uri' => env('WAPI_BASE_URI', null)]);
-    }
-
     public function blog($id)
     {
         $temp = json_decode((string)$this->client->request('GET', 'comments', ['query' => ['post' => $id]])->getBody(), true);

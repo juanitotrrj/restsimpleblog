@@ -3,9 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use App\Form\SearchForm;
-use App\Form\UsersForm;
 use Cake\Chronos\Chronos;
-use GuzzleHttp\Client;
 
 /**
  * Search Controller
@@ -14,12 +12,6 @@ use GuzzleHttp\Client;
  */
 class SearchController extends AppController
 {
-    public function initialize()
-    {
-        parent::initialize();
-        $this->client = new Client(['base_uri' => env('WAPI_BASE_URI', null)]);
-    }
-
     /**
      * Index method
      *
