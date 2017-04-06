@@ -15,56 +15,69 @@ class CommentControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = [
-    ];
+    public $fixtures = [];
 
     /**
-     * Test index method
-     *
+     * Test if the URI is active
      * @return void
      */
-    public function testIndex()
+    public function testCommentsApiAccess()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->get('/comment/blog/131');
+        $this->assertResponseOk();
+        $this->assertResponseCode(200);
     }
 
     /**
-     * Test view method
-     *
+     * Test if the return is always JSON
      * @return void
      */
-    public function testView()
+    public function testCommentsJsonReturn()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->get('/comment/blog/131');
+        $this->assertHeaderContains('Content-Type', 'application/json');
     }
 
     /**
-     * Test add method
-     *
+     * Accept only POST HTTP verb on adding commments
      * @return void
      */
-    public function testAdd()
+    public function testCommentsAcceptPostOnlyOnSave()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        // Correct
+        $this->post('/comment/add', ['m' => 'test' . time(), 'id' => 131]);
+        $this->assertResponseOk();
+
+        // Wrong
+        $this->get('/comment/add', ['m' => 'test' . time(), 'id' => 131]);
+        $this->assertResponseCode(405);
+        $this->put('/comment/add', ['m' => 'test' . time(), 'id' => 131]);
+        $this->assertResponseCode(405);
+        $this->delete('/comment/add', ['m' => 'test' . time(), 'id' => 131]);
+        $this->assertResponseCode(405);
+        $this->patch('/comment/add', ['m' => 'test' . time(), 'id' => 131]);
+        $this->assertResponseCode(405);
     }
 
     /**
-     * Test edit method
-     *
+     * Accept only GET on retrieving comments
      * @return void
      */
-    public function testEdit()
+    public function testCommentsAcceptGetOnlyOnRetrieve()
     {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
+        // Correct
+        $this->get('/comment/blog/131');
+        $this->assertResponseOk();
+        $this->assertHeaderContains('Content-Type', 'application/json');
 
-    /**
-     * Test delete method
-     *
-     * @return void
-     */
-    public function testDelete()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
+        // Wrong
+        $this->post('/comment/blog/131');
+        $this->assertResponseCode(405);
+        $this->put('/comment/blog/131');
+        $this->assertResponseCode(405);
+        $this->delete('/comment/blog/131');
+        $this->assertResponseCode(405);
+        $this->patch('/comment/blog/131');
+        $this->assertResponseCode(405);
     }
 }

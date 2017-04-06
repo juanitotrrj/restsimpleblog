@@ -13,6 +13,8 @@ class CommentController extends AppController
 {
     public function blog($id)
     {
+        $this->request->allowMethod(['get']);
+
         $temp = json_decode((string)$this->client->request('GET', 'comments', ['query' => ['post' => $id]])->getBody(), true);
         $comments = [];
         foreach ($temp as $comment)
@@ -37,6 +39,8 @@ class CommentController extends AppController
      */
     public function add()
     {
+        $this->request->allowMethod(['post']);
+
         $data = $this->request->getData();
         $this->client->post('comments', ['form_params' => [
             'post' => $data['id'],
