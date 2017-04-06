@@ -105,7 +105,7 @@ class SearchController extends AppController
                     }
 
                     // WP-API args
-                    $api_args = array_merge($api_args, $date_args, $search_args, $user_args, $sort_args);
+                    $api_args = array_merge($api_args, $date_args, $search_args, $user_args, $sort_args, ['per_page' => 100]);
                 }
 
                 $temp = json_decode((string)$this->client->request('GET', 'posts', ['query' => $api_args])->getBody(), true);
