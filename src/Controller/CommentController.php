@@ -48,7 +48,7 @@ class CommentController extends AppController
         $this->client->post('comments', ['form_params' => [
             'post' => $data['id'],
             'content' => $data['m'],
-            'author' => 1
+            'author' => 2
         ], 'auth' => [env('WAPI_USER'), env('WAPI_PASS')]]);
 
         return $this->response

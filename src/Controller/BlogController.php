@@ -44,18 +44,38 @@ class BlogController extends AppController
     public function add()
     {
         $blog = ['title' => 'Blog title', 'content' => 'Blog content', 'image' => ''];
+        $search_data = array_merge(
+            ['user' => '', 'search' => '', 'published_date' => '', 'sb' => '', 'sd' => ''], 
+            $this->request->getData()
+        );
 
-        if ($this->request->is('post'))
+        if (!empty($search_data['a_create']))
         {
             $data = $this->request->getData();
 
             // Save the image
+            $media_raw = $this->client->post('media', [  
+                'body' => file_get_contents($data['image']['tmp_name']),
+                'headers' => [
+                    'Content-Type' => $data['image']['type'],
+                    'Content-Disposition' => 'attachment; filename=' . $data['image']['name'],
+                    'Cache-Control' => 'no-cache'
+                ],
+                'auth' => [env('WAPI_USER'), env('WAPI_PASS')]
+            ])->getBody();
+            $media_raw = json_decode((string)$media_raw, true);
 
             // Save the post
-            
+            $post_raw = $this->client->post('posts', ['query' => [
+                'title' => strip_tags($data['a_title']),
+                'content' => $data['a_content'],
+                'featured_media' => $media_raw['id'],
+                'status' => 'publish'
+            ], 'auth' => [env('WAPI_USER'), env('WAPI_PASS')]])->getBody();
+            $post_raw = json_decode((string)$post_raw, true);
             
             $this->Flash->success(__('Post created.'));
-            return $this->redirect(['action' => 'view', $id]);
+            return $this->redirect(['action' => 'view', $post_raw['id']]);
         }
 
         $this->set(compact('blog', 'id', 'search_data'));
@@ -172,26 +192,38 @@ class BlogController extends AppController
         $blog['image'] = $image['guid']['rendered'];
 
         // Tags
-        $tags_raw = json_decode((string)$this->client->request('GET', 'tags', ['query' => ['include' => implode(',', $post['tags'])]])->getBody(), true);
-        foreach ($tags_raw as $tag)
+        $blog['tags'] = [];
+        if (!empty($post['tags']))
         {
-            $blog['tags'][] = $tag['name'];
+            $tags_raw = json_decode((string)$this->client->request('GET', 'tags', ['query' => ['include' => implode(',', $post['tags'])]])->getBody(), true);
+            foreach ($tags_raw as $tag)
+            {
+                $blog['tags'][] = $tag['name'];
+            }
         }
 
         // Category
-        $categories_raw = json_decode((string)$this->client->request('GET', 'categories', ['query' => ['include' => implode(',', $post['categories'])]])->getBody(), true);
-        foreach ($categories_raw as $category)
+        $blog['categories'] = [];
+        if (!empty($post['categories']))
         {
-            $blog['categories'][] = $category['name'];
+            $categories_raw = json_decode((string)$this->client->request('GET', 'categories', ['query' => ['include' => implode(',', $post['categories'])]])->getBody(), true);
+            foreach ($categories_raw as $category)
+            {
+                $blog['categories'][] = $category['name'];
+            }
         }
 
         // Revisions
-        $revisions_raw = json_decode((string)$this->client->request('GET', 'posts/' . $post['id'] . '/revisions', ['auth' => [env('WAPI_USER'), env('WAPI_PASS')]])->getBody(), true);
-        foreach ($revisions_raw as $revision)
+        $blog['revisions'] = [];
+        if (!empty($post['revisions']))
         {
-            $blog['revisions'][] = [
-                'date' => (new Chronos($revision['date']))->toDateTimeString()
-            ];
+            $revisions_raw = json_decode((string)$this->client->request('GET', 'posts/' . $post['id'] . '/revisions', ['auth' => [env('WAPI_USER'), env('WAPI_PASS')]])->getBody(), true);
+            foreach ($revisions_raw as $revision)
+            {
+                $blog['revisions'][] = [
+                    'date' => (new Chronos($revision['date']))->toDateTimeString()
+                ];
+            }
         }
 
         return $blog;

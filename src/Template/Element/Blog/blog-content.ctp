@@ -8,19 +8,25 @@ if (in_array($mode, ['edit']))
 $this->Html->css('blog', ['block' => true]);
 ?>
 <div class="row blog-image">
-<?php if (in_array($mode, ['edit'])): ?>
+<?php if (in_array($mode, ['edit', 'create'])): ?>
 	<div class="large-2 columns edit-nav">
 		<u><h5>Actions</h5></u>
 		<button type="button" id="btn-edit-save" class="success button">Save</button>
 		<br>
 		<button type="button" id="btn-edit-cancel" class="secondary button">Cancel</button>
+	<?php if (in_array($mode, ['edit'])): ?>
 		<br>
 		<button type="button" id="btn-edit-delete" class="alert button">Delete</button>
+	<?php endif; ?>
 	</div>
 <?php endif; ?>
 	<div class="large-offset-2 large-8 columns">
 		<div class="row">
+		<?php if (in_array($mode, ['create'])): ?>
+			<?= $this->Form->file('image') ?>
+		<?php else: ?>
 			<img src="<?= $blog['image'] ?>">
+		<?php endif; ?>
 		</div>
 		<div class="row">
 			<div class="large-12">
@@ -55,8 +61,8 @@ $this->Html->css('blog', ['block' => true]);
 			</div>
 		</div>
 	</div>
-<?php if (in_array($mode, ['edit'])): ?>
 	<div class="large-2 columns edit-nav fix-right">
+<?php if (in_array($mode, ['edit'])): ?>
 		<u><h5>Revision History</h5></u>
 		<dd>
 		<?php foreach ($blog['revisions'] as $revision): ?>
@@ -65,6 +71,8 @@ $this->Html->css('blog', ['block' => true]);
 			</blockquote>
 		<?php endforeach; ?>
 		</dd>
-	</div>
+<?php else: ?>
+		&nbsp;
 <?php endif; ?>
+	</div>
 </div>
