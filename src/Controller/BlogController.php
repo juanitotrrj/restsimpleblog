@@ -6,6 +6,7 @@ use Cake\Chronos\Chronos;
 use GuzzleHttp\Client;
 use Dompdf\Dompdf;
 use Cake\View\View;
+use Cake\Routing\Router;
 
 /**
  * Blog Controller
@@ -153,9 +154,9 @@ class BlogController extends AppController
         $dompdf = new Dompdf();
         $dompdf->loadHtml($view->render('/Blog/Download/' . $type));
         $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setBasePath(Router::url('/', true));
         $dompdf->render();
-        $this->response->header('Content-type', 'application/pdf');
-        $dompdf->stream();
+        $dompdf->stream(strip_tags($blog['title']) . '.pdf');
     }
 
     /**
