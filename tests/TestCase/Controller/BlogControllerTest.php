@@ -16,7 +16,6 @@ class BlogControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'app.blog'
     ];
 
     /**

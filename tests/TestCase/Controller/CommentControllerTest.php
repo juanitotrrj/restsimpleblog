@@ -16,7 +16,6 @@ class CommentControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'app.comment'
     ];
 
     /**
