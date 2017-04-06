@@ -12,7 +12,8 @@
         "cakephp/plugin-installer": "*",
         "vlucas/phpdotenv": "^2.4",
         "guzzlehttp/guzzle": "^6.2",
-        "dompdf/dompdf": "^0.8.0"
+        "dompdf/dompdf": "^0.8.0",
+        "fzaninotto/faker": "^1.6"
     },
     "require-dev": {
         "psy/psysh": "@stable",
