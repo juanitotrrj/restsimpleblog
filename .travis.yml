@@ -5,7 +5,6 @@ dist: trusty
 sudo: false
 
 php:
-  - 5.6
   - 7.0
   - 7.1
 
@@ -17,6 +16,7 @@ matrix:
       env: PHPCS=1
 
 before_script:
+  - cp .env.sample .env
   - if [[ $PHPCS = 1 ]]; then composer require cakephp/cakephp-codesniffer:~2.1; fi
   - if [[ $PHPCS != 1 ]]; then composer install; fi
   - if [[ $PHPCS != 1 ]]; then composer require phpunit/phpunit:"^5.7|^6.0"; fi
@@ -24,7 +24,7 @@ before_script:
 
 script:
   - if [[ $PHPCS != 1 ]]; then vendor/bin/phpunit; fi
-  - if [[ $PHPCS = 1 ]]; then vendor/bin/phpcs -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests ./config ./webroot; fi
+  - if [[ $PHPCS = 1 ]]; then vendor/bin/phpcs -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests; fi
 
 notifications:
   email: false
