@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css?family=Crimson+Text|Vidaloka');
+* {
+	font-family: 'Crimson Text', serif;	
+}
+
+h1,h2,h3,h4,h5,h6 {
+	font-family: 'Vidaloka', serif;
+}
+
+.no-left-padding {
+	padding-left: 0;
+}
+
+.no-right-padding {
+	padding-right: 0;
+}
+
+.edit-nav {
+	position: fixed;
+	top: 20px;
+}
+
+.fix-right {
+	right: 0;
+}
+
+.valign-end {
+	display: flex;
+	align-items: flex-end;
+}
